@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,28 +39,37 @@ public class ProductControllerTest {
 	public void retrieveProductsTest() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/api/products/2").accept(MediaType.APPLICATION_JSON);
 		//when(converterUtil.convertDtoToEntity(buildProductDto())).thenReturn(buildProductEntity());
-		when(prodCatService.findProductById(1)).thenReturn(buildProductEntity());
+		Product prodEntity = buildProductEntity();
+		when(prodCatService.findProductById(2)).thenReturn(prodEntity);
+		when(converterUtil.convertEntityToDto(prodEntity)).thenReturn(buildProductDto());
 		MvcResult result = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+	
+		
+		String jsonExpected = "{description:\"prod desc\",displayName:\"prod display\",id:123,productSubCatId:5,sku:sku1}";
+ 		JSONAssert.assertEquals(jsonExpected, result.getResponse()
+			      .getContentAsString(), false);
 		
 	
 	}
 	
-	/*private ProductDto buildProductDto(){
+	private ProductDto buildProductDto(){
 		ProductDto dto = new ProductDto();
 		dto.setDescription("prod desc");
 		dto.setDisplayName("prod display");
 		dto.setId(123);
-		dto.setProductSubCatId(1);
+		dto.setProductSubCatId(5);
 		dto.setSku("sku1");
 		return dto;
-	}*/
+	}
 	
 	private Product buildProductEntity(){
 		Product entity = new Product();
 		entity.setDescription("prod desc");
 		entity.setDisplayName("prod display");
 		entity.setId(123);
-		entity.setProductSubCat(new ProductSubCategory());
+		ProductSubCategory prodsubcat=new ProductSubCategory();
+		prodsubcat.setId(5);
+		entity.setProductSubCat(prodsubcat);
 		entity.setSku("sku1");
 		return entity;
 	}
