@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories
+//@EnableJpaRepositories : Have commented this code due to some error on JPA model while running controller junit test case
 @PropertySource(value = { "classpath:errormsg.properties" })
 public class ProductCatalogueServiceApplication {
 
